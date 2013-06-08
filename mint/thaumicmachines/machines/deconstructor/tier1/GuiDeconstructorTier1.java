@@ -13,41 +13,41 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiDeconstructorTier1 extends GuiContainer
 {
-    private TileEntityDeconstructorTier1 tileDeconTier1Inventory;
+    private TileEntityDeconstructorTier1 decon1Inventory;
 
-    public GuiDeconstructorTier1(InventoryPlayer inventoryPlayer, TileEntityDeconstructorTier1 tileentity)
+    public GuiDeconstructorTier1(InventoryPlayer inventoryPlayer, TileEntityDeconstructorTier1 tileDeconTier1)
     {
-        super(new ContainerDeconstructorTier1(inventoryPlayer, tileentity));
-        this.tileDeconTier1Inventory = tileentity;
+    	super(new ContainerDeconstructorTier1(inventoryPlayer, tileDeconTier1));
+    	this.decon1Inventory = tileDeconTier1;
+    	//xSize = 176;
+    	ySize = 239;
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int x, int y) {
-
-        String containerName = "Thaumic Deonstructor Tier1";
-        fontRenderer.drawString(containerName, xSize / 2 - fontRenderer.getStringWidth(containerName) / 2, 6, 4210752);
-        fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 93, 4210752);
+    protected void drawGuiContainerForegroundLayer(int x, int y)
+    {
+    	String containerName = decon1Inventory.isInvNameLocalized() ? decon1Inventory.getInvName() : StatCollector.translateToLocal(decon1Inventory.getInvName());
+    	fontRenderer.drawString(containerName, xSize / 2 - fontRenderer.getStringWidth(containerName) / 2, 6, 4210752);
+    	//fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, ySize - 93, 4210752);
     }
 
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3)
-	{
-		GL11.glColor4f(1f, 1f, 1f, 1f);
-		
-		mc.renderEngine.bindTexture(Reference.GUI_PATH + "deconTier1.png");
-		
-		int x = (width - xSize) / 2;
-		int y = (height - ySize) / 2;
-		drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-		int i1;
-		
-		/*if(tileDeconTier1Inventory.isWorking())
-		{
-			i1 = tileDeconTier1Inventory.getWorkRemaining(12);
-			drawTexturedModalRect(x + 56, y + 36 + 12 - i1, 176, 12 - i1, 14, i1 + 2);
-		}
-		
-		i1 = tileDeconTier1Inventory.getWorkRemaining(24);
-		drawTexturedModalRect(x + 79, y + 34, 176, 14, i1 + 1, 16);*/
-	}
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3)
+    {
+    	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+    	mc.renderEngine.bindTexture(Reference.GUI_PATH + "deconTier1.png");
+    	int xStart = (width - xSize) / 2;
+    	int yStart = (height - ySize) / 2;
+    	this.drawTexturedModalRect(xStart, yStart, 0, 0, xSize, ySize);
+    	
+        if (this.decon1Inventory.isWorking())
+        {
+        	fontRenderer.drawString(StatCollector.translateToLocal("Working..."), 8, ySize - 93, 4210752);
+        }
+        
+        else
+        {
+        	fontRenderer.drawString(StatCollector.translateToLocal("Idle..."), 8, ySize - 93, 4210752);
+        }
+    }
 }

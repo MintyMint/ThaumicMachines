@@ -6,15 +6,16 @@ import mint.thaumicmachines.items.ItemHelper;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 
-public class TabThaumicMachines extends CreativeTabs
+public class TabTM extends CreativeTabs
 {
-	public static TabThaumicMachines tabTM = new TabThaumicMachines();
+	public static TabTM tabTM = new TabTM();
 	
-	public TabThaumicMachines()
+	public TabTM()
 	{
 		super(getNextID(), Reference.MOD_ID);
 	}
 	
+	@SideOnly(Side.CLIENT)
     public Item getTabIconItem()
     {
     	return ItemHelper.singularity;

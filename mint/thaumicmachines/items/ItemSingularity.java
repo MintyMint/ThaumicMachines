@@ -6,7 +6,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mint.quantumcoins.ConfigHelper;
 import mint.thaumicmachines.core.Reference;
-import mint.thaumicmachines.core.TabThaumicMachines;
+import mint.thaumicmachines.core.TabTM;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -21,15 +21,15 @@ public class ItemSingularity extends Item
 	public ItemSingularity(int par1)
 	{
 		super(par1);
-		setCreativeTab(TabThaumicMachines.tabTM);
+		setCreativeTab(TabTM.tabTM);
 	}
 	
 	@Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IconRegister iconregister)
     {
-		unstable = iconregister.registerIcon(Reference.MOD_ID + ":" + "unstableSingularity");
-		stable = iconregister.registerIcon(Reference.MOD_ID + ":" + "stabilizedSingularity");
+		unstable = iconregister.registerIcon(Reference.MOD_ID + ":" + "ItemUnstableSingularity");
+		stable = iconregister.registerIcon(Reference.MOD_ID + ":" + "ItemStabilizedSingularity");
     }
 	
     public String getItemDisplayName(ItemStack itemstack)

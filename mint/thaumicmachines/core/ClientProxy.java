@@ -13,19 +13,6 @@ import net.minecraftforge.common.MinecraftForge;
 public class ClientProxy extends CommonProxy
 {   
 	@Override
-	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
-    {
-
-    	if (ID == 0)
-    	{
-    		TileEntityDeconstructorTier1 tileDeconTeir1 = (TileEntityDeconstructorTier1)world.getBlockTileEntity(x, y, z);
-            return new ContainerDeconstructorTier1(player.inventory, tileDeconTeir1);
-    	}
-		
-		return null;
-	}
-	
-	@Override
     public void registerRenderers()
     {
 		//PurifierBlockRenderID = RenderingRegistry.getNextAvailableRenderId();

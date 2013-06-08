@@ -13,11 +13,11 @@ public class Reference
 	public static int DECONSTRUCTOR_TIER2_RENDER_ID;
 	
 	//sounds
-	public static String SOUND_LOCATION  = "mods/" + MOD_ID + "/sounds/";
+	public static String SOUND_LOCATION  = "/mods/" + MOD_ID + "/sounds/";
 	public static String SOUND_PREFIX = "mods." + MOD_ID + ".sounds.";
 	
 	//gui
-	public static String GUI_PATH = "mods/" + MOD_ID + "/textures/gui/";
+	public static String GUI_PATH = "/mods/" + MOD_ID + "/textures/gui/";
 	
     /* NBT related constants [coppied from EE3, needs changing*/
     public static final String NBT_ITEM_CHARGE_LEVEL_KEY = "itemChargeLevel";
