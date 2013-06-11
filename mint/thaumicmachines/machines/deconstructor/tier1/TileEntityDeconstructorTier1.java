@@ -157,21 +157,25 @@ public class TileEntityDeconstructorTier1 extends TileTM implements IInventory
     {
         return true;
     }
-
-    @Override
-    public void onInventoryChanged()
-    {
-        worldObj.updateAllLightTypes(xCoord, yCoord, zCoord);
-    }
     
     public boolean isWorking()
     {
         return this.decon1WorkTime > 0;
     }
     
+    public int getWorkTime()
+    {
+    	return decon1WorkTime;
+    }
+    
+    public void setWorkTime(int time)
+    {
+    	decon1WorkTime = time;
+    }
+    
     public int getWorkProgressScaled(int scale)
     {
-        return this.decon1WorkTime * scale / 200;
+        return decon1WorkTime * scale / 200;
     }
     
     public void updateEntity()
@@ -183,8 +187,9 @@ public class TileEntityDeconstructorTier1 extends TileTM implements IInventory
             if (this.canDecon())
             {
                 ++this.decon1WorkTime;
+                System.out.println("" + this.isWorking());
 
-                if (this.decon1WorkTime == 200)
+                if (this.decon1WorkTime == 64)
                 {
                     this.decon1WorkTime = 0;
                     this.deconItem();
@@ -224,11 +229,11 @@ public class TileEntityDeconstructorTier1 extends TileTM implements IInventory
              || this.decon1Inventory[2].isItemEqual(this.getStackInSlot(2)) == false
              || this.decon1Inventory[2].isItemEqual(this.getStackInSlot(3)) == false) return false;
             
-            for (int slot = 0; slot < 3; ++slot)
-            {
-            	int result = decon1Inventory[slot].stackSize + this.getStackInSlot(slot).stackSize;
-            	return (result <= getInventoryStackLimit() && result <= this.getStackInSlot(slot).getMaxStackSize());
-            }
+            //for (int slot = 0; slot < 3; slot++)
+            //{
+            //	int result = decon1Inventory[slot].stackSize + this.getStackInSlot(slot).stackSize;
+            //	return (result <= getInventoryStackLimit() && result <= this.getStackInSlot(slot).getMaxStackSize());
+            //}
         }
         
         return false;
@@ -239,25 +244,31 @@ public class TileEntityDeconstructorTier1 extends TileTM implements IInventory
         if (this.canDecon())
         {
             ItemStack itemstack = this.getStackInSlot(0);
-            EnumTag[] containedAspects = new ObjectTags(itemstack.itemID, itemstack.getItemDamage()).getAspects();
+            ObjectTags itemTags = new ObjectTags(itemstack.itemID, itemstack.getItemDamage());
+            EnumTag[] containedAspects = itemTags.getAspectsSorted();
             
+            for (int slot = 0; slot < 3; slot++)
+            { 	
+        		int meta = containedAspects[slot].id;
+        		int amount = itemTags.getAmount(containedAspects[slot]);
+        		
+            	System.out.println("slot " + slot);
+            	if (this.decon1Inventory[slot+1] == null)
+            	{
+            		this.decon1Inventory[slot+1] = new ItemStack(ItemHelper.aspectShard, amount, meta);
+            	}
             
-            if (this.decon1Inventory[1] == null)
-            {
-            	int meta = containedAspects[0].id;
-                int amount = new ObjectTags().getAmount(containedAspects[0]);
-            	this.decon1Inventory[1] = new ItemStack(ItemHelper.aspectShard, amount, meta);
-            }
-            else if (this.decon1Inventory[1].isItemEqual(itemstack))
-            {
-            	decon1Inventory[2].stackSize += itemstack.stackSize;
+            	else if (this.decon1Inventory[slot+1].isItemEqual(itemstack))
+            	{
+            		decon1Inventory[slot+1].stackSize += amount;
+            	}
             }
 
             --this.decon1Inventory[0].stackSize;
 
             if (this.decon1Inventory[0].stackSize <= 0)
             {
-                this.decon1Inventory[0] = null;
+            	this.decon1Inventory[0] = null;
             }
         }
     }

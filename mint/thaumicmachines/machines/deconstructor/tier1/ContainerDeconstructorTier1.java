@@ -1,5 +1,7 @@
 package mint.thaumicmachines.machines.deconstructor.tier1;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mint.thaumicmachines.core.SlotOutOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -11,7 +13,7 @@ import net.minecraft.item.ItemStack;
 public class ContainerDeconstructorTier1 extends Container
 {
 	private TileEntityDeconstructorTier1 tileDeconTier1;
-	private int lastWorkTime = 0;
+	private int workTime = 0;
 
     public ContainerDeconstructorTier1(InventoryPlayer playerinventory, TileEntityDeconstructorTier1 tileDeconTier1) {
 
@@ -24,16 +26,28 @@ public class ContainerDeconstructorTier1 extends Container
         this.bindPlayerInventory(playerinventory);
     }
     
-    @Override
-    public void detectAndSendChanges()
-    {
-        super.detectAndSendChanges();
-    }
+	@Override
+	public void detectAndSendChanges()
+	{
+		super.detectAndSendChanges();
+		for(int i = 0; i < crafters.size(); i++)
+		{
+			((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 0, tileDeconTier1.getWorkTime());
+		}
+	}
+
+	@Override
+	public void updateProgressBar(int var, int value)
+	{
+		super.updateProgressBar(var, value);
+
+		if(var == 0) tileDeconTier1.setWorkTime(value);
+	}
 
     @Override
     public boolean canInteractWith(EntityPlayer player)
     {
-        return tileDeconTier1.isUseableByPlayer(player);
+        return true;
     }
 
 

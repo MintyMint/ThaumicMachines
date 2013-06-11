@@ -59,11 +59,14 @@ public class BlockDeconTeir1 extends BlockTM {
 
         if (player.isSneaking())
             return false;
-        else {
-            if (!world.isRemote) {
+        else
+        {
+            if (!world.isRemote)
+            {
             	TileEntityDeconstructorTier1 TileEntityDeconstructorTier1 = (TileEntityDeconstructorTier1) world.getBlockTileEntity(x, y, z);
 
-                if (TileEntityDeconstructorTier1 != null) {
+                if (TileEntityDeconstructorTier1 != null)
+                {
                     player.openGui(ThaumicMachines.instance, 0, world, x, y, z);
                 }
             }
