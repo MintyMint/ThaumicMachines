@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 public class ContainerDeconstructorTier1 extends Container
 {
 	private TileEntityDeconstructorTier1 tileDeconTier1;
-	private int workTime = 0;
+	private int lastWorkTime = 0;
 
     public ContainerDeconstructorTier1(InventoryPlayer playerinventory, TileEntityDeconstructorTier1 tileDeconTier1) {
 
@@ -26,23 +26,40 @@ public class ContainerDeconstructorTier1 extends Container
         this.bindPlayerInventory(playerinventory);
     }
     
-	@Override
-	public void detectAndSendChanges()
-	{
-		super.detectAndSendChanges();
-		for(int i = 0; i < crafters.size(); i++)
-		{
-			((ICrafting)crafters.get(i)).sendProgressBarUpdate(this, 0, tileDeconTier1.getWorkTime());
-		}
-	}
+    @Override
+    public void addCraftingToCrafters(ICrafting iCrafting)
+    {
+        super.addCraftingToCrafters(iCrafting);
+        iCrafting.sendProgressBarUpdate(this, 0, tileDeconTier1.decon1WorkTime);
+    }
+    
+    @Override
+    public void detectAndSendChanges()
+    {
+        super.detectAndSendChanges();
 
-	@Override
-	public void updateProgressBar(int var, int value)
-	{
-		super.updateProgressBar(var, value);
+        for (int var1 = 0; var1 < crafters.size(); ++var1)
+        {
+            ICrafting iCrafting = (ICrafting) crafters.get(var1);
 
-		if(var == 0) tileDeconTier1.setWorkTime(value);
-	}
+            if (lastWorkTime != tileDeconTier1.decon1WorkTime)
+            {
+                iCrafting.sendProgressBarUpdate(this, 0, tileDeconTier1.decon1WorkTime);
+            }
+        }
+
+        lastWorkTime = tileDeconTier1.decon1WorkTime;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void updateProgressBar(int ID, int value)
+    {
+        if (ID == 0)
+        {
+        	tileDeconTier1.decon1WorkTime = value;
+        }
+    }
 
     @Override
     public boolean canInteractWith(EntityPlayer player)
