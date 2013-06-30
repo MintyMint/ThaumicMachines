@@ -2,25 +2,26 @@ package mint.thaumicmachines.machines.deconstructor.tier1;
 
 import java.util.Random;
 
-import thaumcraft.api.EnumTag;
-import thaumcraft.api.ObjectTags;
-import mint.quantumcoins.ConfigHelper;
 import mint.thaumicmachines.core.TileTM;
 import mint.thaumicmachines.items.ItemHelper;
-import net.minecraft.block.BlockFurnace;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import thaumcraft.api.EnumTag;
+import thaumcraft.api.ObjectTags;
 
 public class TileEntityDeconstructorTier1 extends TileTM implements IInventory
 {
-    private ItemStack[] decon1Inventory;
+    ObjectTags itemTags;
+    EnumTag[] containedAspects;
+	
+	private ItemStack[] decon1Inventory;
     
     public int decon1WorkTime = 0;
     
-    public Random chance;
+    public Random chance = new Random();
 
     public TileEntityDeconstructorTier1()
     {
@@ -65,20 +66,22 @@ public class TileEntityDeconstructorTier1 extends TileTM implements IInventory
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slot) {
-
+    public ItemStack getStackInSlotOnClosing(int slot)
+    {
         ItemStack itemStack = getStackInSlot(slot);
-        if (itemStack != null) {
+        if (itemStack != null)
+        {
             setInventorySlotContents(slot, null);
         }
         return itemStack;
     }
 
     @Override
-    public void setInventorySlotContents(int slot, ItemStack itemStack) {
-
+    public void setInventorySlotContents(int slot, ItemStack itemStack)
+    {
         decon1Inventory[slot] = itemStack;
-        if (itemStack != null && itemStack.stackSize > getInventoryStackLimit()) {
+        if (itemStack != null && itemStack.stackSize > getInventoryStackLimit())
+        {
             itemStack.stackSize = getInventoryStackLimit();
         }
     }
@@ -93,6 +96,11 @@ public class TileEntityDeconstructorTier1 extends TileTM implements IInventory
     public int getInventoryStackLimit()
     {
         return 64;
+    }
+    
+    public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer)
+    {
+        return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : par1EntityPlayer.getDistanceSq((double)this.xCoord + 0.5D, (double)this.yCoord + 0.5D, (double)this.zCoord + 0.5D) <= 64.0D;
     }
 
     @Override
@@ -187,9 +195,8 @@ public class TileEntityDeconstructorTier1 extends TileTM implements IInventory
             if (this.canDecon())
             {
                 ++this.decon1WorkTime;
-                System.out.println("" + this.isWorking());
 
-                if (this.decon1WorkTime == 64)
+                if (this.decon1WorkTime == 200)
                 {
                     this.decon1WorkTime = 0;
                     this.deconItem();
@@ -212,31 +219,32 @@ public class TileEntityDeconstructorTier1 extends TileTM implements IInventory
     
     private boolean canDecon()
     {
-        //ItemStack itemstack = this.getStackInSlot(0);
-        //EnumTag[] containedAspects = new ObjectTags(itemstack.itemID, itemstack.getItemDamage()).getAspects();
-    	
     	if (this.decon1Inventory[0] == null)
         {
             return false;
         }
-        
-        //else if (containedAspects.length == 0) return false;
-        
+
         else
         {
-        	if (this.decon1Inventory[1] == null || this.decon1Inventory[2] == null || this.decon1Inventory[3] == null) return true;
-            if (this.decon1Inventory[2].isItemEqual(this.getStackInSlot(1)) == false
-             || this.decon1Inventory[2].isItemEqual(this.getStackInSlot(2)) == false
-             || this.decon1Inventory[2].isItemEqual(this.getStackInSlot(3)) == false) return false;
+            ItemStack itemstack = this.getStackInSlot(0);
+            itemTags = new ObjectTags(itemstack.itemID, itemstack.getItemDamage());
+            containedAspects = itemTags.getAspectsSorted();
             
-            //for (int slot = 0; slot < 3; slot++)
-            //{
-            //	int result = decon1Inventory[slot].stackSize + this.getStackInSlot(slot).stackSize;
-            //	return (result <= getInventoryStackLimit() && result <= this.getStackInSlot(slot).getMaxStackSize());
-            //}
-        }
-        
-        return false;
+            if (itemTags == null) return false;
+            
+            int[] slotSize = new int[3];
+            	
+            if (this.getStackInSlot(1) != null) slotSize[0] = this.getStackInSlot(1).stackSize;
+            if (this.getStackInSlot(2) != null) slotSize[1] = this.getStackInSlot(2).stackSize;
+            if (this.getStackInSlot(3) != null) slotSize[2] = this.getStackInSlot(3).stackSize;
+            
+            if (   (slotSize[0] + itemTags.getAmount(containedAspects[0]) > this.getInventoryStackLimit())
+            	|| (slotSize[1] + itemTags.getAmount(containedAspects[1]) > this.getInventoryStackLimit())
+            	|| (slotSize[2] + itemTags.getAmount(containedAspects[2]) > this.getInventoryStackLimit())
+            	) return false;
+            
+            else return true;
+         }
     }
     
     public void deconItem()
@@ -244,23 +252,22 @@ public class TileEntityDeconstructorTier1 extends TileTM implements IInventory
         if (this.canDecon())
         {
             ItemStack itemstack = this.getStackInSlot(0);
-            ObjectTags itemTags = new ObjectTags(itemstack.itemID, itemstack.getItemDamage());
-            EnumTag[] containedAspects = itemTags.getAspectsSorted();
+            itemTags = new ObjectTags(itemstack.itemID, itemstack.getItemDamage());
+            containedAspects = itemTags.getAspectsSorted();
             
             for (int slot = 0; slot < 3; slot++)
             { 	
         		int meta = containedAspects[slot].id;
         		int amount = itemTags.getAmount(containedAspects[slot]);
         		
-            	System.out.println("slot " + slot);
             	if (this.decon1Inventory[slot+1] == null)
             	{
-            		this.decon1Inventory[slot+1] = new ItemStack(ItemHelper.aspectShard, amount, meta);
+            		this.decon1Inventory[slot+1] = new ItemStack(ItemHelper.aspectShard, chance.nextInt(amount+1), meta);
             	}
             
-            	else if (this.decon1Inventory[slot+1].isItemEqual(itemstack))
+            	else if (this.decon1Inventory[slot+1].isItemEqual(this.getStackInSlot(slot+1)))
             	{
-            		decon1Inventory[slot+1].stackSize += amount;
+            		decon1Inventory[slot+1].stackSize += chance.nextInt(amount+1);
             	}
             }
 
@@ -271,5 +278,9 @@ public class TileEntityDeconstructorTier1 extends TileTM implements IInventory
             	this.decon1Inventory[0] = null;
             }
         }
+        
+        //empty variables to make sure the next item populates the correct aspects
+        itemTags = null;
+        containedAspects = null;
     }
 }

@@ -32,7 +32,8 @@ public class ItemAspectShard extends Item
 	
 	public String getItemDisplayName(ItemStack par1ItemStack)
 	{
-		return "Aspect Shard of " + EnumTag.get(par1ItemStack.getItemDamage()).name;
+		//return "Aspect Shard of " + EnumTag.get(par1ItemStack.getItemDamage()).name;
+		return  EnumTag.get(par1ItemStack.getItemDamage()).name + " Shard";
 	}
 	
     @SideOnly(Side.CLIENT)

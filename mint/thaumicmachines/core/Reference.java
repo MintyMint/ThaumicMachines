@@ -19,7 +19,7 @@ public class Reference
 	//gui
 	public static String GUI_PATH = "/mods/" + MOD_ID + "/textures/gui/";
 	
-    /* NBT related constants [coppied from EE3, needs changing*/
+    /* NBT related constants [coppied from EE3, needs changing]*/
     public static final String NBT_ITEM_CHARGE_LEVEL_KEY = "itemChargeLevel";
     public static final String NBT_ITEM_MODE_KEY = "itemMode";
     public static final String NBT_ITEM_CRAFTING_GUI_OPEN = "itemCraftingGuiOpen";

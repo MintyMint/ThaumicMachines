@@ -15,13 +15,15 @@ public class ContainerDeconstructorTier1 extends Container
 	private TileEntityDeconstructorTier1 tileDeconTier1;
 	private int lastWorkTime = 0;
 
-    public ContainerDeconstructorTier1(InventoryPlayer playerinventory, TileEntityDeconstructorTier1 tileDeconTier1) {
-
+    public ContainerDeconstructorTier1(InventoryPlayer playerinventory, TileEntityDeconstructorTier1 tileDeconTier1)
+    {
+        this.tileDeconTier1 = tileDeconTier1;
+        
+        this.addSlotToContainer(new Slot(tileDeconTier1, 0, 80, 76));
+        
         this.addSlotToContainer(new Slot(tileDeconTier1, 1, 80, 18));
         this.addSlotToContainer(new Slot(tileDeconTier1, 2, 29, 105));
         this.addSlotToContainer(new Slot(tileDeconTier1, 3, 130, 105));
-
-        this.addSlotToContainer(new Slot(tileDeconTier1, 0, 80, 76));
 
         this.bindPlayerInventory(playerinventory);
     }
@@ -64,7 +66,7 @@ public class ContainerDeconstructorTier1 extends Container
     @Override
     public boolean canInteractWith(EntityPlayer player)
     {
-        return true;
+    	return this.tileDeconTier1.isUseableByPlayer(player);
     }
 
 
